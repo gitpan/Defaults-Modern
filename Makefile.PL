@@ -23,20 +23,23 @@ my %WriteMakefileArgs = (
     "Carp" => 0,
     "Function::Parameters" => 0,
     "Import::Into" => 0,
+    "Keyword::Simple" => 0,
     "List::Objects::Types" => 0,
     "List::Objects::WithUtils" => "1.009",
     "Path::Tiny" => 0,
+    "PerlX::Maybe" => "0.004",
     "Scalar::Util" => 0,
     "Try::Tiny" => 0,
     "Type::Tiny" => 0,
     "Types::Standard" => 0,
     "bareword::filehandles" => 0,
+    "indirect" => "0.30",
     "true" => 0
   },
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.001001",
+  "VERSION" => "0.002001",
   "test" => {
     "TESTS" => "t/*.t"
   }

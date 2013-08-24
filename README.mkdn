@@ -6,13 +6,27 @@ Defaults::Modern - Yet another approach to modernistic Perl
 
     use Defaults::Modern;
 
-    # Small example ...
     # Function::Parameters + List::Objects::WithUtils + types ->
     fun to_immutable ( (ArrayRef | ArrayObj) $arr ) {
+      # blessed() and confess() are available (amongst others):
       my $immutable = immarray( blessed $arr ? $arr->all : @$arr );
       confess "No items in array!" unless $immutable->has_any;
       $immutable
     }
+
+    # define keyword for defining constants ->
+
+    define ARRAY_MAX = 10;
+
+    fun slice_to_max ( ArrayObj $arr ) {
+      $arr->sliced( 0 .. ARRAY_MAX )
+    }
+
+    # Optionally autobox list-type refs via List::Objects::WithUtils ->
+    use Defaults::Modern 'autobox_lists';
+
+    my $obj = +{ foo => 'bar', baz => 'quux' }->inflate;
+    my $baz = $obj->baz;
 
     # See DESCRIPTION for complete details on imported functionality.
 
@@ -24,25 +38,63 @@ Yet another approach to writing Perl in a modern style.
 
 When you `use Defaults::Modern`, you get:
 
-- [strict](http://search.cpan.org/perldoc?strict) and fatal [warnings](http://search.cpan.org/perldoc?warnings) except for `once`
-- The `v5.14` feature set (state, say, unicode\_strings, array\_base) except for
-`switch`
-- __carp__, __croak__, and __confess__ from [Carp](http://search.cpan.org/perldoc?Carp)
-- __blessed__, __reftype__, and __weaken__ from [Scalar::Util](http://search.cpan.org/perldoc?Scalar::Util)
+- [strict](http://search.cpan.org/perldoc?strict) and fatal [warnings](http://search.cpan.org/perldoc?warnings) except for `once`; additionally disallow
+[bareword::filehandles](http://search.cpan.org/perldoc?bareword::filehandles) and [indirect](http://search.cpan.org/perldoc?indirect) method calls
+- The `v5.14` feature set (`state`, `say`, `unicode_strings`, `array_base`) -- except for
+`switch`, which is deprecated in newer perls
+- __carp__, __croak__, and __confess__ error reporting tools from [Carp](http://search.cpan.org/perldoc?Carp)
+- __blessed__, __reftype__, and __weaken__ utilities from [Scalar::Util](http://search.cpan.org/perldoc?Scalar::Util)
 - __array__, __immarray__, and __hash__ object constructors from
 [List::Objects::WithUtils](http://search.cpan.org/perldoc?List::Objects::WithUtils)
-- __fun__ and __method__ from [Function::Parameters](http://search.cpan.org/perldoc?Function::Parameters)
+- __fun__ and __method__ keywords from [Function::Parameters](http://search.cpan.org/perldoc?Function::Parameters)
 - The full [Types::Standard](http://search.cpan.org/perldoc?Types::Standard) set and [List::Objects::Types](http://search.cpan.org/perldoc?List::Objects::Types), which are useful
-in combination with [Function::Parameters](http://search.cpan.org/perldoc?Function::Parameters)
+in combination with [Function::Parameters](http://search.cpan.org/perldoc?Function::Parameters) (see the ["SYNOPSIS"](#SYNOPSIS) and
+[Function::Parameters](http://search.cpan.org/perldoc?Function::Parameters) POD)
 - __try__ and __catch__ from [Try::Tiny](http://search.cpan.org/perldoc?Try::Tiny)
-- __path__ from [Path::Tiny](http://search.cpan.org/perldoc?Path::Tiny)
-- [true](http://search.cpan.org/perldoc?true)
+- The __path__ object constructor from [Path::Tiny](http://search.cpan.org/perldoc?Path::Tiny)
+- __maybe__ and __provided__ definedness-checking syntax sugar from [PerlX::Maybe](http://search.cpan.org/perldoc?PerlX::Maybe)
+- A __define__ keyword for defining constants based on [PerlX::Define](http://search.cpan.org/perldoc?PerlX::Define)
+- [true](http://search.cpan.org/perldoc?true) so you can skip adding '1;' to all of your modules
+
+If you import `autobox_lists`, ARRAY and HASH type references are autoboxed
+via [List::Objects::WithUtils](http://search.cpan.org/perldoc?List::Objects::WithUtils).
 
 Uses [Import::Into](http://search.cpan.org/perldoc?Import::Into) to provide __import__; see the [Import::Into](http://search.cpan.org/perldoc?Import::Into)
 documentation for details.
+
+# SEE ALSO
+
+This package just glues together useful parts of CPAN, the
+most visible portions of which come from the following modules:
+
+[Carp](http://search.cpan.org/perldoc?Carp)
+
+[Function::Parameters](http://search.cpan.org/perldoc?Function::Parameters)
+
+[List::Objects::WithUtils](http://search.cpan.org/perldoc?List::Objects::WithUtils)
+
+[List::Objects::Types](http://search.cpan.org/perldoc?List::Objects::Types)
+
+[Path::Tiny](http://search.cpan.org/perldoc?Path::Tiny)
+
+[PerlX::Maybe](http://search.cpan.org/perldoc?PerlX::Maybe)
+
+[Scalar::Util](http://search.cpan.org/perldoc?Scalar::Util)
+
+[Try::Tiny](http://search.cpan.org/perldoc?Try::Tiny)
+
+[Types::Standard](http://search.cpan.org/perldoc?Types::Standard)
+
+[Type::Tiny](http://search.cpan.org/perldoc?Type::Tiny)
 
 # AUTHOR
 
 Jon Portnoy <avenj@cobaltirc.org>
 
-Inspired by [Defaults::Mauke](http://search.cpan.org/perldoc?Defaults::Mauke)
+Licensed under the same terms as Perl.
+
+Inspired by [Defaults::Mauke](http://search.cpan.org/perldoc?Defaults::Mauke) and [Moops](http://search.cpan.org/perldoc?Moops).
+
+The code backing the __define__ keyword is forked from TOBYINK's
+[PerlX::Define](http://search.cpan.org/perldoc?PerlX::Define) to avoid the [Moops](http://search.cpan.org/perldoc?Moops) dependency and is copyright Toby
+Inkster.

@@ -1,59 +1,74 @@
 package Defaults::Modern;
 {
-  $Defaults::Modern::VERSION = '0.001001';
+  $Defaults::Modern::VERSION = '0.002001';
 }
 use v5.14;
-use strict; use warnings FATAL => 'all';
-no bareword::filehandles;
 
-use Carp;
-use Scalar::Util ();
+use strict; use warnings FATAL => 'all';
+
+no bareword::filehandles;
+no indirect ':fatal';
+
+use Carp    ();
 use feature ();
 use true    ();
 
-use Function::Parameters ();
-use Path::Tiny           ();
-use Try::Tiny            ();
-use Types::Standard      ();
-
-use List::Objects::Types ();
-use List::Objects::WithUtils ();
+use Defaults::Modern::Define  ();
+use Function::Parameters      ();
+use List::Objects::Types      ();
+use List::Objects::WithUtils  ();
+use Path::Tiny                ();
+use PerlX::Maybe              ();
+use Try::Tiny                 ();
+use Types::Standard           ();
+use Scalar::Util              ();
 
 use Import::Into;
 
 sub import {
-  my $caller = caller;
+  my ($class, @imports) = @_;
+  my %params = map {; ($_ =~ s/^://r) => 1 } @imports;
 
-  Carp->import::into($caller,
+  my $pkg = caller;
+
+  Defaults::Modern::Define->import::into($pkg);
+
+  Carp->import::into($pkg,
     qw/carp croak confess/,
   );
 
-  Scalar::Util->import::into($caller,
+  Scalar::Util->import::into($pkg,
     qw/blessed reftype weaken/,
   );
   
   strict->import;
   warnings->import(FATAL => 'all');
   warnings->unimport('once');
+
   bareword::filehandles->unimport;
+  indirect->unimport(':fatal');
 
   feature->import(':5.14');
   feature->unimport('switch');
 
   true->import;
 
-  Function::Parameters->import::into($caller);
-  Path::Tiny->import::into($caller, 'path');
-  Try::Tiny->import::into($caller);
+  Function::Parameters->import::into($pkg);
+  Path::Tiny->import::into($pkg, 'path');
+  Try::Tiny->import::into($pkg);
 
-  List::Objects::WithUtils->import::into($caller,
-    qw/array hash immarray/
-  );
+  PerlX::Maybe->import::into($pkg, qw/maybe provided/);
 
-  List::Objects::Types->import::into($caller, '-all');
-  Types::Standard->import::into($caller, '-types');
+  my @lowu = qw/array hash immarray/;
+  push @lowu, 'autobox' 
+    if defined $params{autobox_lists}
+    or defined $params{autoboxed_lists};
+  List::Objects::WithUtils->import::into($pkg, @lowu);
 
-  1
+  List::Objects::Types->import::into($pkg, '-all');
+  Types::Standard->import::into($pkg, '-types');
+
+  $class
 }
 
 1;
@@ -68,13 +83,27 @@ Defaults::Modern - Yet another approach to modernistic Perl
 
   use Defaults::Modern;
 
-  # Small example ...
   # Function::Parameters + List::Objects::WithUtils + types ->
   fun to_immutable ( (ArrayRef | ArrayObj) $arr ) {
+    # blessed() and confess() are available (amongst others):
     my $immutable = immarray( blessed $arr ? $arr->all : @$arr );
     confess "No items in array!" unless $immutable->has_any;
     $immutable
   }
+
+  # define keyword for defining constants ->
+
+  define ARRAY_MAX = 10;
+
+  fun slice_to_max ( ArrayObj $arr ) {
+    $arr->sliced( 0 .. ARRAY_MAX )
+  }
+
+  # Optionally autobox list-type refs via List::Objects::WithUtils ->
+  use Defaults::Modern 'autobox_lists';
+
+  my $obj = +{ foo => 'bar', baz => 'quux' }->inflate;
+  my $baz = $obj->baz;
 
   # See DESCRIPTION for complete details on imported functionality.
 
@@ -90,20 +119,21 @@ When you C<use Defaults::Modern>, you get:
 
 =item *
 
-L<strict> and fatal L<warnings> except for C<once>
+L<strict> and fatal L<warnings> except for C<once>; additionally disallow
+L<bareword::filehandles> and L<indirect> method calls
 
 =item *
 
-The C<v5.14> feature set (state, say, unicode_strings, array_base) except for
-C<switch>
+The C<v5.14> feature set (C<state>, C<say>, C<unicode_strings>, C<array_base>) -- except for
+C<switch>, which is deprecated in newer perls
 
 =item *
 
-B<carp>, B<croak>, and B<confess> from L<Carp>
+B<carp>, B<croak>, and B<confess> error reporting tools from L<Carp>
 
 =item *
 
-B<blessed>, B<reftype>, and B<weaken> from L<Scalar::Util>
+B<blessed>, B<reftype>, and B<weaken> utilities from L<Scalar::Util>
 
 =item *
 
@@ -112,12 +142,13 @@ L<List::Objects::WithUtils>
 
 =item *
 
-B<fun> and B<method> from L<Function::Parameters>
+B<fun> and B<method> keywords from L<Function::Parameters>
 
 =item *
 
 The full L<Types::Standard> set and L<List::Objects::Types>, which are useful
-in combination with L<Function::Parameters>
+in combination with L<Function::Parameters> (see the L</SYNOPSIS> and
+L<Function::Parameters> POD)
 
 =item *
 
@@ -125,22 +156,64 @@ B<try> and B<catch> from L<Try::Tiny>
 
 =item *
 
-B<path> from L<Path::Tiny>
+The B<path> object constructor from L<Path::Tiny>
 
 =item *
 
-L<true>
+B<maybe> and B<provided> definedness-checking syntax sugar from L<PerlX::Maybe>
+
+=item *
+
+A B<define> keyword for defining constants based on L<PerlX::Define>
+
+=item *
+
+L<true> so you can skip adding '1;' to all of your modules
 
 =back
 
+If you import C<autobox_lists>, ARRAY and HASH type references are autoboxed
+via L<List::Objects::WithUtils>.
+
 Uses L<Import::Into> to provide B<import>; see the L<Import::Into>
 documentation for details.
+
+=head1 SEE ALSO
+
+This package just glues together useful parts of CPAN, the
+most visible portions of which come from the following modules:
+
+L<Carp>
+
+L<Function::Parameters>
+
+L<List::Objects::WithUtils>
+
+L<List::Objects::Types>
+
+L<Path::Tiny>
+
+L<PerlX::Maybe>
+
+L<Scalar::Util>
+
+L<Try::Tiny>
+
+L<Types::Standard>
+
+L<Type::Tiny>
 
 =head1 AUTHOR
 
 Jon Portnoy <avenj@cobaltirc.org>
 
-Inspired by L<Defaults::Mauke>
+Licensed under the same terms as Perl.
+
+Inspired by L<Defaults::Mauke> and L<Moops>.
+
+The code backing the B<define> keyword is forked from TOBYINK's
+L<PerlX::Define> to avoid the L<Moops> dependency and is copyright Toby
+Inkster.
 
 =cut
 

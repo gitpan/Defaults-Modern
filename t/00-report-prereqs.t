@@ -14,15 +14,19 @@ my @modules = qw(
   ExtUtils::MakeMaker
   Function::Parameters
   Import::Into
+  Keyword::Simple
   List::Objects::Types
   List::Objects::WithUtils
   Path::Tiny
+  PerlX::Maybe
+  PerlX::Maybe::XS
   Scalar::Util
   Test::More
   Try::Tiny
   Type::Tiny
   Types::Standard
   bareword::filehandles
+  indirect
   perl
   true
 );

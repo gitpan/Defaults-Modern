@@ -9,7 +9,9 @@ README.mkdn
 dist.ini
 examples/to_immutable.pl
 lib/Defaults/Modern.pm
+lib/Defaults/Modern/Define.pm
 t/00-report-prereqs.t
+t/inc/PkgTrue.pm
 t/modern.t
 t/release-cpan-changes.t
 t/release-dist-manifest.t
@@ -17,5 +19,4 @@ t/release-no-tabs.t
 t/release-pod-coverage.t
 t/release-pod-linkcheck.t
 t/release-pod-syntax.t
-t/release-synopsis.t
 t/release-unused-vars.t

@@ -4,13 +4,27 @@ NAME
 SYNOPSIS
       use Defaults::Modern;
 
-      # Small example ...
       # Function::Parameters + List::Objects::WithUtils + types ->
       fun to_immutable ( (ArrayRef | ArrayObj) $arr ) {
+        # blessed() and confess() are available (amongst others):
         my $immutable = immarray( blessed $arr ? $arr->all : @$arr );
         confess "No items in array!" unless $immutable->has_any;
         $immutable
       }
+
+      # define keyword for defining constants ->
+
+      define ARRAY_MAX = 10;
+
+      fun slice_to_max ( ArrayObj $arr ) {
+        $arr->sliced( 0 .. ARRAY_MAX )
+      }
+
+      # Optionally autobox list-type refs via List::Objects::WithUtils ->
+      use Defaults::Modern 'autobox_lists';
+
+      my $obj = +{ foo => 'bar', baz => 'quux' }->inflate;
+      my $baz = $obj->baz;
 
       # See DESCRIPTION for complete details on imported functionality.
 
@@ -21,34 +35,75 @@ DESCRIPTION
 
     When you "use Defaults::Modern", you get:
 
-    *   strict and fatal warnings except for "once"
+    *   strict and fatal warnings except for "once"; additionally disallow
+        bareword::filehandles and indirect method calls
 
-    *   The "v5.14" feature set (state, say, unicode_strings, array_base)
-        except for "switch"
+    *   The "v5.14" feature set ("state", "say", "unicode_strings",
+        "array_base") -- except for "switch", which is deprecated in newer
+        perls
 
-    *   carp, croak, and confess from Carp
+    *   carp, croak, and confess error reporting tools from Carp
 
-    *   blessed, reftype, and weaken from Scalar::Util
+    *   blessed, reftype, and weaken utilities from Scalar::Util
 
     *   array, immarray, and hash object constructors from
         List::Objects::WithUtils
 
-    *   fun and method from Function::Parameters
+    *   fun and method keywords from Function::Parameters
 
     *   The full Types::Standard set and List::Objects::Types, which are
-        useful in combination with Function::Parameters
+        useful in combination with Function::Parameters (see the "SYNOPSIS"
+        and Function::Parameters POD)
 
     *   try and catch from Try::Tiny
 
-    *   path from Path::Tiny
+    *   The path object constructor from Path::Tiny
 
-    *   true
+    *   maybe and provided definedness-checking syntax sugar from
+        PerlX::Maybe
+
+    *   A define keyword for defining constants based on PerlX::Define
+
+    *   true so you can skip adding '1;' to all of your modules
+
+    If you import "autobox_lists", ARRAY and HASH type references are
+    autoboxed via List::Objects::WithUtils.
 
     Uses Import::Into to provide import; see the Import::Into documentation
     for details.
 
+SEE ALSO
+    This package just glues together useful parts of CPAN, the most visible
+    portions of which come from the following modules:
+
+    Carp
+
+    Function::Parameters
+
+    List::Objects::WithUtils
+
+    List::Objects::Types
+
+    Path::Tiny
+
+    PerlX::Maybe
+
+    Scalar::Util
+
+    Try::Tiny
+
+    Types::Standard
+
+    Type::Tiny
+
 AUTHOR
     Jon Portnoy <avenj@cobaltirc.org>
 
-    Inspired by Defaults::Mauke
+    Licensed under the same terms as Perl.
+
+    Inspired by Defaults::Mauke and Moops.
+
+    The code backing the define keyword is forked from TOBYINK's
+    PerlX::Define to avoid the Moops dependency and is copyright Toby
+    Inkster.
 
