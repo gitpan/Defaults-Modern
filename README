@@ -1,0 +1,54 @@
+NAME
+    Defaults::Modern - Yet another approach to modernistic Perl
+
+SYNOPSIS
+      use Defaults::Modern;
+
+      # Small example ...
+      # Function::Parameters + List::Objects::WithUtils + types ->
+      fun to_immutable ( (ArrayRef | ArrayObj) $arr ) {
+        my $immutable = immarray( blessed $arr ? $arr->all : @$arr );
+        confess "No items in array!" unless $immutable->has_any;
+        $immutable
+      }
+
+      # See DESCRIPTION for complete details on imported functionality.
+
+DESCRIPTION
+    Yet another approach to writing Perl in a modern style.
+
+    . . . also saves me extensive typing ;-)
+
+    When you "use Defaults::Modern", you get:
+
+    *   strict and fatal warnings except for "once"
+
+    *   The "v5.14" feature set (state, say, unicode_strings, array_base)
+        except for "switch"
+
+    *   carp, croak, and confess from Carp
+
+    *   blessed, reftype, and weaken from Scalar::Util
+
+    *   array, immarray, and hash object constructors from
+        List::Objects::WithUtils
+
+    *   fun and method from Function::Parameters
+
+    *   The full Types::Standard set and List::Objects::Types, which are
+        useful in combination with Function::Parameters
+
+    *   try and catch from Try::Tiny
+
+    *   path from Path::Tiny
+
+    *   true
+
+    Uses Import::Into to provide import; see the Import::Into documentation
+    for details.
+
+AUTHOR
+    Jon Portnoy <avenj@cobaltirc.org>
+
+    Inspired by Defaults::Mauke
+

@@ -1,0 +1,32 @@
+---
+abstract: 'Yet another approach to modernistic Perl'
+author:
+  - 'Jon Portnoy <avenj@cobaltirc.org>'
+build_requires:
+  Test::More: 0.88
+configure_requires:
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.120921'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Defaults-Modern
+requires:
+  Carp: 0
+  Function::Parameters: 0
+  Import::Into: 0
+  List::Objects::Types: 0
+  List::Objects::WithUtils: 1.009
+  Path::Tiny: 0
+  Scalar::Util: 0
+  Try::Tiny: 0
+  Type::Tiny: 0
+  Types::Standard: 0
+  bareword::filehandles: 0
+  perl: v5.14.1
+  true: 0
+resources:
+  repository: git://github.com/avenj/defaults-modern.git
+version: 0.001001
