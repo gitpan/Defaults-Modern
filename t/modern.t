@@ -13,6 +13,7 @@ can_ok __PACKAGE__, qw/ array immarray hash /;
 
 #  Path::Tiny
 can_ok __PACKAGE__, qw/ path /;
+ok is_Path(path('/')), 'Path::Tiny and Types for same ok';
 
 #  PerlX::Maybe
 can_ok __PACKAGE__, qw/ maybe provided /;
@@ -22,6 +23,10 @@ can_ok __PACKAGE__, qw/ blessed reftype weaken /;
 
 #  Try::Catch
 can_ok __PACKAGE__, qw/ try catch /;
+
+# match::simple
+my @foo = qw/foo bar baz/;
+ok 'foo' |M| \@foo, 'match::simple imported ok';
 
 # true
 use lib 't/inc';

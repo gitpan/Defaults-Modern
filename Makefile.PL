@@ -21,25 +21,27 @@ my %WriteMakefileArgs = (
   "NAME" => "Defaults::Modern",
   "PREREQ_PM" => {
     "Carp" => 0,
-    "Function::Parameters" => 0,
-    "Import::Into" => 0,
+    "Function::Parameters" => "1.0201",
+    "Import::Into" => 1,
     "Keyword::Simple" => 0,
     "List::Objects::Types" => 0,
     "List::Objects::WithUtils" => "1.009",
-    "Path::Tiny" => 0,
+    "Path::Tiny" => "0.03",
     "PerlX::Maybe" => "0.004",
     "Scalar::Util" => 0,
     "Try::Tiny" => 0,
-    "Type::Tiny" => 0,
+    "Type::Tiny" => "0.022",
+    "Types::Path::Tiny" => "0.005",
     "Types::Standard" => 0,
     "bareword::filehandles" => 0,
     "indirect" => "0.30",
-    "true" => 0
+    "match::simple" => "0.004",
+    "true" => "0.18"
   },
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.002002",
+  "VERSION" => "0.003001",
   "test" => {
     "TESTS" => "t/*.t"
   }

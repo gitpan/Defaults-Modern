@@ -1,6 +1,6 @@
 package Defaults::Modern;
 {
-  $Defaults::Modern::VERSION = '0.002002';
+  $Defaults::Modern::VERSION = '0.003001';
 }
 use v5.14;
 
@@ -13,6 +13,8 @@ use Carp    ();
 use feature ();
 use true    ();
 
+use match::simple ();
+
 use Defaults::Modern::Define  ();
 use Function::Parameters      ();
 use List::Objects::Types      ();
@@ -21,6 +23,7 @@ use Path::Tiny                ();
 use PerlX::Maybe              ();
 use Try::Tiny                 ();
 use Types::Standard           ();
+use Types::Path::Tiny         ();
 use Scalar::Util              ();
 
 use Import::Into;
@@ -48,8 +51,10 @@ sub import {
 
   my $pkg = caller;
 
+  # Us
   Defaults::Modern::Define->import::into($pkg);
 
+  # Core
   Carp->import::into($pkg,
     qw/carp croak confess/,
   );
@@ -58,6 +63,7 @@ sub import {
     qw/blessed reftype weaken/,
   );
   
+  # Pragmas
   strict->import;
   warnings->import(FATAL => 'all');
   warnings->unimport('once');
@@ -68,22 +74,23 @@ sub import {
   feature->import(':5.14');
   feature->unimport('switch');
 
+  match::simple->import::into($pkg);
   true->import;
 
+  # External functionality
   Function::Parameters->import::into($pkg);
-
   Path::Tiny->import::into($pkg, 'path');
-
-  Try::Tiny->import::into($pkg);
-
   PerlX::Maybe->import::into($pkg, qw/maybe provided/);
+  Try::Tiny->import::into($pkg);
 
   my @lowu = qw/array hash immarray/;
   push @lowu, 'autobox' if defined $params{autobox_lists};
   List::Objects::WithUtils->import::into($pkg, @lowu);
 
-  List::Objects::Types->import::into($pkg, '-all');
+  # Types
   Types::Standard->import::into($pkg, '-all');
+  List::Objects::Types->import::into($pkg, '-all');
+  Types::Path::Tiny->import::into($pkg, '-all');
 
   $class
 }
@@ -116,12 +123,15 @@ Defaults::Modern - Yet another approach to modernistic Perl
 
     # Moo(se) with types ->
     use Moo;
+    use MooX::late;
 
     has myarray => (
       isa => ArrayObj,
       is  => 'ro',
       writer  => '_set_myarray',
-      default => sub { array },
+      # MooX::late allows us to coerce from an ArrayRef:
+      coerce  => 1,
+      default => sub { [] },
     );
 
     # Method with optional positional param and implicit $self ->
@@ -189,7 +199,8 @@ B<try> and B<catch> from L<Try::Tiny>
 
 =item *
 
-The B<path> object constructor from L<Path::Tiny>
+The B<path> object constructor from L<Path::Tiny> and related types/coercions
+from L<Types::Path::Tiny>
 
 =item *
 
@@ -201,7 +212,11 @@ A B<define> keyword for defining constants based on L<PerlX::Define>
 
 =item *
 
-L<true> so you can skip adding '1;' to all of your modules
+The C<|M|> match operator from L<match::simple>
+
+=item *
+
+L<true>.pm so you can skip adding '1;' to all of your modules
 
 =back
 

@@ -20,12 +20,15 @@ SYNOPSIS
 
         # Moo(se) with types ->
         use Moo;
+        use MooX::late;
 
         has myarray => (
           isa => ArrayObj,
           is  => 'ro',
           writer  => '_set_myarray',
-          default => sub { array },
+          # MooX::late allows us to coerce from an ArrayRef:
+          coerce  => 1,
+          default => sub { [] },
         );
 
         # Method with optional positional param and implicit $self ->
@@ -73,14 +76,17 @@ DESCRIPTION
 
     *   try and catch from Try::Tiny
 
-    *   The path object constructor from Path::Tiny
+    *   The path object constructor from Path::Tiny and related
+        types/coercions from Types::Path::Tiny
 
     *   maybe and provided definedness-checking syntax sugar from
         PerlX::Maybe
 
     *   A define keyword for defining constants based on PerlX::Define
 
-    *   true so you can skip adding '1;' to all of your modules
+    *   The "|M|" match operator from match::simple
+
+    *   true.pm so you can skip adding '1;' to all of your modules
 
     If you import "autobox_lists", ARRAY and HASH type references are
     autoboxed via List::Objects::WithUtils.

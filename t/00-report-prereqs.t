@@ -24,9 +24,11 @@ my @modules = qw(
   Test::More
   Try::Tiny
   Type::Tiny
+  Types::Path::Tiny
   Types::Standard
   bareword::filehandles
   indirect
+  match::simple
   perl
   true
 );
