@@ -34,4 +34,4 @@ requires:
   true: 0
 resources:
   repository: git://github.com/avenj/defaults-modern.git
-version: 0.002001
+version: 0.002002

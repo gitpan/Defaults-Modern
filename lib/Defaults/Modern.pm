@@ -1,6 +1,6 @@
 package Defaults::Modern;
 {
-  $Defaults::Modern::VERSION = '0.002001';
+  $Defaults::Modern::VERSION = '0.002002';
 }
 use v5.14;
 
@@ -27,7 +27,24 @@ use Import::Into;
 
 sub import {
   my ($class, @imports) = @_;
-  my %params = map {; ($_ =~ s/^://r) => 1 } @imports;
+
+  state $known = +{ 
+    map {; $_ => 1 } qw/
+      all
+      autobox_lists 
+    /
+  };
+
+  my %params = map {; 
+    my $opt = lc($_ =~ s/^://r);
+    Carp::croak "$class does not export $opt" 
+      unless $known->{$opt};
+    $opt => 1
+  } @imports;
+
+  if (delete $params{all}) {
+    $params{$_} = 1 for grep {; $_ ne 'all' } keys %$known
+  }
 
   my $pkg = caller;
 
@@ -54,19 +71,19 @@ sub import {
   true->import;
 
   Function::Parameters->import::into($pkg);
+
   Path::Tiny->import::into($pkg, 'path');
+
   Try::Tiny->import::into($pkg);
 
   PerlX::Maybe->import::into($pkg, qw/maybe provided/);
 
   my @lowu = qw/array hash immarray/;
-  push @lowu, 'autobox' 
-    if defined $params{autobox_lists}
-    or defined $params{autoboxed_lists};
+  push @lowu, 'autobox' if defined $params{autobox_lists};
   List::Objects::WithUtils->import::into($pkg, @lowu);
 
   List::Objects::Types->import::into($pkg, '-all');
-  Types::Standard->import::into($pkg, '-types');
+  Types::Standard->import::into($pkg, '-all');
 
   $class
 }
@@ -91,17 +108,33 @@ Defaults::Modern - Yet another approach to modernistic Perl
     $immutable
   }
 
-  # define keyword for defining constants ->
+  package My::Foo {
+    use Defaults::Modern;
 
-  define ARRAY_MAX = 10;
+    # define keyword for defining constants ->
+    define ARRAY_MAX = 10;
 
-  fun slice_to_max ( ArrayObj $arr ) {
-    $arr->sliced( 0 .. ARRAY_MAX )
+    # Moo(se) with types ->
+    use Moo;
+
+    has myarray => (
+      isa => ArrayObj,
+      is  => 'ro',
+      writer  => '_set_myarray',
+      default => sub { array },
+    );
+
+    # Method with optional positional param and implicit $self ->
+    method slice_to_max (Int $max = -1) {
+      my $arr = $self->myarray;
+      $self->_set_myarray( 
+        $arr->sliced( 0 .. $max >= 0 ? $max : ARRAY_MAX )
+      )
+    }
   }
 
   # Optionally autobox list-type refs via List::Objects::WithUtils ->
   use Defaults::Modern 'autobox_lists';
-
   my $obj = +{ foo => 'bar', baz => 'quux' }->inflate;
   my $baz = $obj->baz;
 
