@@ -32,7 +32,6 @@ my %WriteMakefileArgs = (
     "Try::Tiny" => 0,
     "Type::Tiny" => "0.022",
     "Types::Path::Tiny" => "0.005",
-    "Types::Standard" => 0,
     "bareword::filehandles" => 0,
     "indirect" => "0.30",
     "match::simple" => "0.004",
@@ -41,7 +40,7 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.003001",
+  "VERSION" => "0.003002",
   "test" => {
     "TESTS" => "t/*.t"
   }
