@@ -8,7 +8,7 @@ SYNOPSIS
       fun to_immutable ( (ArrayRef | ArrayObj) $arr ) {
         # blessed() and confess() are available (amongst others):
         my $immutable = immarray( blessed $arr ? $arr->all : @$arr );
-        confess "No items in array!" unless $immutable->has_any;
+        confess 'No items in array!' unless $immutable->has_any;
         $immutable
       }
 
@@ -86,13 +86,34 @@ DESCRIPTION
 
     *   The "|M|" match operator from match::simple
 
+    *   The "sswitch" and "nswitch" switch/case constructs from
+        Switch::Plain
+
     *   true.pm so you can skip adding '1;' to all of your modules
 
-    If you import "autobox_lists", ARRAY and HASH type references are
-    autoboxed via List::Objects::WithUtils.
+    If you import the tag "autobox_lists", ARRAY and HASH type references
+    are autoboxed via List::Objects::WithUtils:
 
-    Uses Import::Into to provide import; see the Import::Into documentation
-    for details.
+      use Defaults::Modern 'autobox_lists';
+      my $itr = [ 1 .. 10 ]->natatime(2);
+
+    Moo and MooX::late are depended upon in order to guarantee their
+    availability, but not automatically imported:
+
+      use Moo;
+      use MooX::late;
+      use Defaults::Modern;
+
+      has foo => (
+        is  => 'ro',
+        isa => ArrayObj,
+        coerce  => 1,
+        default => sub { [] },
+      );
+
+    (If you're building classes, you may want to look into namespace::clean
+    / namespace::sweep or similar -- Defaults::Modern imports an awful lot
+    of Stuff. Moops may be nicer to work with.)
 
 SEE ALSO
     This package just glues together useful parts of CPAN, the most visible
@@ -102,15 +123,17 @@ SEE ALSO
 
     Function::Parameters
 
-    List::Objects::WithUtils
+    List::Objects::WithUtils and List::Objects::Types
 
-    List::Objects::Types
+    match::simple
 
     Path::Tiny
 
     PerlX::Maybe
 
     Scalar::Util
+
+    Switch::Plain
 
     Try::Tiny
 

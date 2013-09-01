@@ -26,9 +26,12 @@ my %WriteMakefileArgs = (
     "Keyword::Simple" => 0,
     "List::Objects::Types" => 0,
     "List::Objects::WithUtils" => "1.009",
+    "Moo" => 1,
+    "MooX::late" => "0.014",
     "Path::Tiny" => "0.03",
-    "PerlX::Maybe" => "0.004",
+    "PerlX::Maybe" => 1,
     "Scalar::Util" => 0,
+    "Switch::Plain" => 0,
     "Try::Tiny" => 0,
     "Type::Tiny" => "0.022",
     "Types::Path::Tiny" => "0.005",
@@ -40,7 +43,7 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.003002",
+  "VERSION" => "0.004001",
   "test" => {
     "TESTS" => "t/*.t"
   }

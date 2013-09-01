@@ -1,6 +1,6 @@
 package Defaults::Modern;
 {
-  $Defaults::Modern::VERSION = '0.003002';
+  $Defaults::Modern::VERSION = '0.004001';
 }
 use v5.14;
 
@@ -22,7 +22,7 @@ use Path::Tiny                ();
 use PerlX::Maybe              ();
 use Try::Tiny                 ();
 use Scalar::Util              ();
-
+use Switch::Plain             ();
 
 use Types::Standard           ();
 use Types::Path::Tiny         ();
@@ -40,6 +40,7 @@ sub import {
     map {; $_ => 1 } qw/
       all
       autobox_lists 
+      moo
     /
   };
 
@@ -116,6 +117,7 @@ sub import {
   Path::Tiny->import::into($pkg, 'path');
   PerlX::Maybe->import::into($pkg, qw/maybe provided/);
   Try::Tiny->import::into($pkg);
+  Switch::Plain->import;
 
   my @lowu = qw/array hash immarray/;
   push @lowu, 'autobox' if defined $params{autobox_lists};
@@ -132,6 +134,12 @@ sub import {
     List::Objects::Types
   /;
 
+  if (defined $params{moo}) {
+    require Moo;
+    Moo->import::into($pkg);
+    require MooX::late;
+    MooX::late->import::into($pkg);
+  }
 
   $class
 }
@@ -152,7 +160,7 @@ Defaults::Modern - Yet another approach to modernistic Perl
   fun to_immutable ( (ArrayRef | ArrayObj) $arr ) {
     # blessed() and confess() are available (amongst others):
     my $immutable = immarray( blessed $arr ? $arr->all : @$arr );
-    confess "No items in array!" unless $immutable->has_any;
+    confess 'No items in array!' unless $immutable->has_any;
     $immutable
   }
 
@@ -257,15 +265,54 @@ The C<|M|> match operator from L<match::simple>
 
 =item *
 
+The C<sswitch> and C<nswitch> switch/case constructs from L<Switch::Plain>
+
+=item *
+
 L<true>.pm so you can skip adding '1;' to all of your modules
 
 =back
 
-If you import C<autobox_lists>, ARRAY and HASH type references are autoboxed
-via L<List::Objects::WithUtils>.
+If you import the tag C<autobox_lists>, ARRAY and HASH type references are autoboxed
+via L<List::Objects::WithUtils>:
 
-Uses L<Import::Into> to provide B<import>; see the L<Import::Into>
-documentation for details.
+  use Defaults::Modern 'autobox_lists';
+  my $itr = [ 1 .. 10 ]->natatime(2);
+
+L<Moo> and L<MooX::late> are depended upon in order to guarantee their
+availability, but not automatically imported:
+
+  use Moo;
+  use MooX::late;
+  use Defaults::Modern;
+
+  has foo => (
+    is  => 'ro',
+    isa => ArrayObj,
+    coerce  => 1,
+    default => sub { [] },
+  );
+
+(If you're building classes, you may want to look into L<namespace::clean> /
+L<namespace::sweep> or similar -- L<Defaults::Modern> imports an awful lot of
+Stuff. L<Moops> may be nicer to work with.)
+
+=begin comment
+
+ ## Undocumented for now, because Moops is a better solution.
+
+If you import C<Moo>, you get L<Moo> and L<MooX::late> (but you should really
+be using L<Moops> instead):
+
+  use Defaults::Modern 'Moo';
+  has foo => (
+    is      => 'ro',
+    isa     => ArrayObj,
+    coerce  => 1,
+    default => sub { [] },
+  );
+
+=end comment
 
 =head1 SEE ALSO
 
@@ -276,15 +323,17 @@ L<Carp>
 
 L<Function::Parameters>
 
-L<List::Objects::WithUtils>
+L<List::Objects::WithUtils> and L<List::Objects::Types>
 
-L<List::Objects::Types>
+L<match::simple>
 
 L<Path::Tiny>
 
 L<PerlX::Maybe>
 
 L<Scalar::Util>
+
+L<Switch::Plain>
 
 L<Try::Tiny>
 

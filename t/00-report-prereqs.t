@@ -17,10 +17,13 @@ my @modules = qw(
   Keyword::Simple
   List::Objects::Types
   List::Objects::WithUtils
+  Moo
+  MooX::late
   Path::Tiny
   PerlX::Maybe
   PerlX::Maybe::XS
   Scalar::Util
+  Switch::Plain
   Test::More
   Try::Tiny
   Type::Tiny
