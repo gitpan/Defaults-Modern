@@ -1,6 +1,6 @@
 package Defaults::Modern::Define;
 {
-  $Defaults::Modern::Define::VERSION = '0.004001';
+  $Defaults::Modern::Define::VERSION = '0.005001';
 }
 use strict; use warnings FATAL => 'all';
 

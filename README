@@ -65,7 +65,7 @@ DESCRIPTION
 
     *   blessed, reftype, and weaken utilities from Scalar::Util
 
-    *   array, immarray, and hash object constructors from
+    *   array, array_of, immarray, and hash object constructors from
         List::Objects::WithUtils
 
     *   fun and method keywords from Function::Parameters
