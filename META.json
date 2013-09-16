@@ -33,7 +33,7 @@
          },
          "requires" : {
             "Carp" : "0",
-            "Function::Parameters" : "1.0201",
+            "Function::Parameters" : "1.0301",
             "Import::Into" : "1",
             "Keyword::Simple" : "0",
             "List::Objects::Types" : "0.005",
@@ -68,6 +68,6 @@
          "web" : "git://github.com/avenj/defaults-modern"
       }
    },
-   "version" : "0.005001"
+   "version" : "0.005002"
 }
 

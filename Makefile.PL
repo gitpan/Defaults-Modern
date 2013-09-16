@@ -21,7 +21,7 @@ my %WriteMakefileArgs = (
   "NAME" => "Defaults::Modern",
   "PREREQ_PM" => {
     "Carp" => 0,
-    "Function::Parameters" => "1.0201",
+    "Function::Parameters" => "1.0301",
     "Import::Into" => 1,
     "Keyword::Simple" => 0,
     "List::Objects::Types" => "0.005",
@@ -43,7 +43,7 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.005001",
+  "VERSION" => "0.005002",
   "test" => {
     "TESTS" => "t/*.t"
   }
