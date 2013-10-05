@@ -3,13 +3,18 @@ use Test::More;
 use Defaults::Modern;
 
 # Imports
+
 # Types
 can_ok __PACKAGE__, qw/ is_Int is_ArrayObj is_HashObj /;
+
 #  Carp
 can_ok __PACKAGE__, qw/ carp croak confess /;
   
 #  List::Objects::WithUtils
-can_ok __PACKAGE__, qw/ array immarray hash /;
+can_ok __PACKAGE__, qw/ 
+  array immarray array_of immarray_of
+  hash immhash hash_of immhash_of
+/;
 
 #  Path::Tiny
 can_ok __PACKAGE__, qw/ path /;

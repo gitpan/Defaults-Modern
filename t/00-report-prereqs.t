@@ -27,6 +27,7 @@ my @modules = qw(
   Test::More
   Try::Tiny
   Type::Tiny
+  Types::LoadableClass
   Types::Path::Tiny
   bareword::filehandles
   indirect

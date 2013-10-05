@@ -24,8 +24,8 @@ my %WriteMakefileArgs = (
     "Function::Parameters" => "1.0301",
     "Import::Into" => 1,
     "Keyword::Simple" => 0,
-    "List::Objects::Types" => "0.005",
-    "List::Objects::WithUtils" => "1.011",
+    "List::Objects::Types" => "0.006",
+    "List::Objects::WithUtils" => 2,
     "Moo" => 1,
     "MooX::late" => "0.014",
     "Path::Tiny" => "0.03",
@@ -34,6 +34,7 @@ my %WriteMakefileArgs = (
     "Switch::Plain" => 0,
     "Try::Tiny" => 0,
     "Type::Tiny" => "0.022",
+    "Types::LoadableClass" => "0.002",
     "Types::Path::Tiny" => "0.005",
     "bareword::filehandles" => 0,
     "indirect" => "0.30",
@@ -43,7 +44,7 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.005002",
+  "VERSION" => "0.006001",
   "test" => {
     "TESTS" => "t/*.t"
   }

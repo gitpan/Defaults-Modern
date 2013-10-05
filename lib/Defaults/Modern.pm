@@ -1,6 +1,6 @@
 package Defaults::Modern;
 {
-  $Defaults::Modern::VERSION = '0.005002';
+  $Defaults::Modern::VERSION = '0.006001';
 }
 use v5.14;
 
@@ -120,21 +120,21 @@ sub import {
   Try::Tiny->import::into($pkg);
   Switch::Plain->import;
 
-  my @lowu = qw/array array_of hash hash_of immarray/;
-  push @lowu, 'autobox' if defined $params{autobox_lists};
-  List::Objects::WithUtils->import::into($pkg, @lowu);
+  $params{autobox_lists} ?
+    List::Objects::WithUtils->import::into($pkg, 'all')
+    : List::Objects::WithUtils->import::into($pkg);
 
   # Types
-  Types::Standard->import::into($pkg, '-all');
-  List::Objects::Types->import::into($pkg, '-all');
-  Types::Path::Tiny->import::into($pkg, '-all');
-
-  my @typelibs = qw/
+  state $typelibs = [ qw/
     Types::Standard
+
     Types::Path::Tiny
-     List::Objects::Types
-  /;
-  for my $typelib (@typelibs) {
+
+    List::Objects::Types
+  / ];
+
+  for my $typelib (@$typelibs) {
+    $typelib->import::into($pkg, -all);
     try {
       Type::Registry->for_class($pkg)->add_types($typelib);
     } catch {
@@ -237,8 +237,9 @@ B<blessed>, B<reftype>, and B<weaken> utilities from L<Scalar::Util>
 
 =item *
 
-B<array>, B<array_of>, B<immarray>, and B<hash> object constructors from
-L<List::Objects::WithUtils>
+All of the L<List::Objects::WithUtils> object constructors (B<array>,
+B<array_of>, B<immarray>, B<immarray_of>, B<hash>, B<hash_of>, B<immhash>,
+B<immhash_of>)
 
 =item *
 
@@ -246,8 +247,8 @@ B<fun> and B<method> keywords from L<Function::Parameters>
 
 =item *
 
-The full L<Types::Standard> set and L<List::Objects::Types>, which are useful
-in combination with L<Function::Parameters> (see the L</SYNOPSIS> and
+The full L<Types::Standard> set and L<List::Objects::Types> -- useful in
+combination with L<Function::Parameters> (see the L</SYNOPSIS> and
 L<Function::Parameters> POD)
 
 =item *
@@ -269,11 +270,11 @@ A B<define> keyword for defining constants based on L<PerlX::Define>
 
 =item *
 
-The C<|M|> match operator from L<match::simple>
+The B<|M|> match operator from L<match::simple>
 
 =item *
 
-The C<sswitch> and C<nswitch> switch/case constructs from L<Switch::Plain>
+The B<sswitch> and B<nswitch> switch/case constructs from L<Switch::Plain>
 
 =item *
 

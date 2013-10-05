@@ -65,14 +65,14 @@ DESCRIPTION
 
     *   blessed, reftype, and weaken utilities from Scalar::Util
 
-    *   array, array_of, immarray, and hash object constructors from
-        List::Objects::WithUtils
+    *   All of the List::Objects::WithUtils object constructors (array,
+        array_of, immarray, immarray_of, hash, hash_of, immhash, immhash_of)
 
     *   fun and method keywords from Function::Parameters
 
-    *   The full Types::Standard set and List::Objects::Types, which are
-        useful in combination with Function::Parameters (see the "SYNOPSIS"
-        and Function::Parameters POD)
+    *   The full Types::Standard set and List::Objects::Types -- useful in
+        combination with Function::Parameters (see the "SYNOPSIS" and
+        Function::Parameters POD)
 
     *   try and catch from Try::Tiny
 
@@ -84,10 +84,9 @@ DESCRIPTION
 
     *   A define keyword for defining constants based on PerlX::Define
 
-    *   The "|M|" match operator from match::simple
+    *   The |M| match operator from match::simple
 
-    *   The "sswitch" and "nswitch" switch/case constructs from
-        Switch::Plain
+    *   The sswitch and nswitch switch/case constructs from Switch::Plain
 
     *   true.pm so you can skip adding '1;' to all of your modules
 
