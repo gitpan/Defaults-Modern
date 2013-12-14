@@ -12,6 +12,7 @@ lib/Defaults/Modern.pm
 lib/Defaults/Modern/Define.pm
 t/00-report-prereqs.t
 t/inc/PkgTrue.pm
+t/inc/TypeLib.pm
 t/modern.t
 t/release-cpan-changes.t
 t/release-dist-manifest.t

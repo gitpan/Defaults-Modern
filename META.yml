@@ -7,7 +7,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -21,7 +21,8 @@ requires:
   Import::Into: 1
   Keyword::Simple: 0
   List::Objects::Types: 0.006
-  List::Objects::WithUtils: 2
+  List::Objects::WithUtils: 2.003001
+  Module::Runtime: 0
   Moo: 1
   MooX::late: 0.014
   Path::Tiny: 0.03
@@ -39,4 +40,4 @@ requires:
   true: 0.18
 resources:
   repository: git://github.com/avenj/defaults-modern.git
-version: 0.006001
+version: 0.007001

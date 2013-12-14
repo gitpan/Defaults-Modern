@@ -1,6 +1,6 @@
 package Defaults::Modern;
 {
-  $Defaults::Modern::VERSION = '0.006001';
+  $Defaults::Modern::VERSION = '0.007001';
 }
 use v5.14;
 
@@ -9,6 +9,7 @@ use strict; use warnings FATAL => 'all';
 no bareword::filehandles;
 no indirect ':fatal';
 
+use Module::Runtime 'use_package_optimistically';
 use Try::Tiny;
 
 use Carp    ();
@@ -35,7 +36,8 @@ use List::Objects::Types      ();
 use Import::Into;
 
 sub import {
-  my ($class, @imports) = @_;
+  my $class = shift;
+  my $pkg = caller;
 
   state $known = +{ 
     map {; $_ => 1 } qw/
@@ -45,18 +47,29 @@ sub import {
     /
   };
 
-  my %params = map {; 
-    my $opt = lc($_ =~ s/^://r);
-    Carp::croak "$class does not export $opt" 
-      unless $known->{$opt};
-    $opt => 1
-  } @imports;
+  my %params;
+  my $idx = 0;
+  my $typelibs;
+  PARAM: for my $item (@_) {
+    my $current = $idx++;
+    if ($item eq 'with_types' || $item eq '-with_types') {
+      $typelibs = $_[$idx];
+      splice @_, $current, 2;
+      Carp::croak "with_types should be an ARRAY, got $typelibs"
+        unless ref $typelibs and Scalar::Util::reftype($typelibs) eq 'ARRAY';
+      next PARAM
+    }
 
-  if (delete $params{all}) {
-    $params{$_} = 1 for grep {; $_ ne 'all' } keys %$known
+    my $opt = lc($item =~ s/^(?:-|:)//r);
+    Carp::croak "$class does not export $opt" unless $known->{$opt};
+
+    if ($opt eq 'all') {
+      $params{$_} = 1 for grep {; $_ ne 'all' } keys %$known;
+      next PARAM
+    }
+
+    $params{$opt} = 1;
   }
-
-  my $pkg = caller;
 
   # Us
   Defaults::Modern::Define->import::into($pkg);
@@ -86,17 +99,15 @@ sub import {
 
   # External functionality
 
-  state $reify = sub {
-    state $guard = do { require Type::Utils };
-    Type::Utils::dwim_type($_[0], for => $_[1])
-  };
-
   state $fp_defaults = +{
     strict                => 1,
     default_arguments     => 1,
     named_parameters      => 1,
     types                 => 1,
-    reify_type            => $reify,
+    reify_type            => sub {
+      state $guard = do { require Type::Utils };
+      Type::Utils::dwim_type($_[0], for => $_[1])
+    },
   };
 
   Function::Parameters->import::into( $pkg,
@@ -125,16 +136,14 @@ sub import {
     : List::Objects::WithUtils->import::into($pkg);
 
   # Types
-  state $typelibs = [ qw/
+  state $mytypelibs = [ qw/
     Types::Standard
-
     Types::Path::Tiny
-
     List::Objects::Types
   / ];
 
-  for my $typelib (@$typelibs) {
-    $typelib->import::into($pkg, -all);
+  for my $typelib (@$mytypelibs, @$typelibs) {
+    use_package_optimistically($typelib)->import::into($pkg, -all);
     try {
       Type::Registry->for_class($pkg)->add_types($typelib);
     } catch {
@@ -281,6 +290,14 @@ The B<sswitch> and B<nswitch> switch/case constructs from L<Switch::Plain>
 L<true>.pm so you can skip adding '1;' to all of your modules
 
 =back
+
+If you want to automatically load (with the '-all' import tag) and register
+other L<Type::Registry> compatible libraries (see L<Type::Library>), they can
+be specified at import time:
+
+  use Defaults::Modern
+    -all,
+    -with_types => [ 'Types::Mine' ],
 
 If you import the tag C<autobox_lists>, ARRAY and HASH type references are autoboxed
 via L<List::Objects::WithUtils>:

@@ -25,7 +25,8 @@ my %WriteMakefileArgs = (
     "Import::Into" => 1,
     "Keyword::Simple" => 0,
     "List::Objects::Types" => "0.006",
-    "List::Objects::WithUtils" => 2,
+    "List::Objects::WithUtils" => "2.003001",
+    "Module::Runtime" => 0,
     "Moo" => 1,
     "MooX::late" => "0.014",
     "Path::Tiny" => "0.03",
@@ -44,37 +45,43 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Test::More" => "0.88"
   },
-  "VERSION" => "0.006001",
+  "VERSION" => "0.007001",
   "test" => {
     "TESTS" => "t/*.t"
   }
 );
 
 
-unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
-  my $tr = delete $WriteMakefileArgs{TEST_REQUIRES};
-  my $br = $WriteMakefileArgs{BUILD_REQUIRES};
-  for my $mod ( keys %$tr ) {
-    if ( exists $br->{$mod} ) {
-      $br->{$mod} = $tr->{$mod} if $tr->{$mod} > $br->{$mod};
-    }
-    else {
-      $br->{$mod} = $tr->{$mod};
-    }
-  }
-}
+my %FallbackPrereqs = (
+  "Carp" => 0,
+  "Function::Parameters" => "1.0301",
+  "Import::Into" => 1,
+  "Keyword::Simple" => 0,
+  "List::Objects::Types" => "0.006",
+  "List::Objects::WithUtils" => "2.003001",
+  "Module::Runtime" => 0,
+  "Moo" => 1,
+  "MooX::late" => "0.014",
+  "Path::Tiny" => "0.03",
+  "PerlX::Maybe" => 1,
+  "Scalar::Util" => 0,
+  "Switch::Plain" => 0,
+  "Test::More" => "0.88",
+  "Try::Tiny" => 0,
+  "Type::Tiny" => "0.022",
+  "Types::LoadableClass" => "0.002",
+  "Types::Path::Tiny" => "0.005",
+  "bareword::filehandles" => 0,
+  "indirect" => "0.30",
+  "match::simple" => "0.004",
+  "true" => "0.18"
+);
 
-unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
-  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
-  my $pp = $WriteMakefileArgs{PREREQ_PM};
-  for my $mod ( keys %$br ) {
-    if ( exists $pp->{$mod} ) {
-      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
-    }
-    else {
-      $pp->{$mod} = $br->{$mod};
-    }
-  }
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  delete $WriteMakefileArgs{TEST_REQUIRES};
+  delete $WriteMakefileArgs{BUILD_REQUIRES};
+  $WriteMakefileArgs{PREREQ_PM} = \%FallbackPrereqs;
 }
 
 delete $WriteMakefileArgs{CONFIGURE_REQUIRES}

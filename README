@@ -90,6 +90,14 @@ DESCRIPTION
 
     *   true.pm so you can skip adding '1;' to all of your modules
 
+    If you want to automatically load (with the '-all' import tag) and
+    register other Type::Registry compatible libraries (see Type::Library),
+    they can be specified at import time:
+
+      use Defaults::Modern
+        -all,
+        -with_types => [ 'Types::Mine' ],
+
     If you import the tag "autobox_lists", ARRAY and HASH type references
     are autoboxed via List::Objects::WithUtils:
 

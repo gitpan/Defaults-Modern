@@ -75,7 +75,7 @@ ok $@, 'switch not imported ok';
 fun calc (Int $x, Num $y) { $x + $y }
 ok calc( 1, 0.5 ) == 1.5, 'Function::Parameters imported ok';
 
-# Switch::Plain;
+# Switch::Plain
 sswitch ('foo') {
   case 'foo': { ok 1, 'Switch::Plain imported ok' }
 }
@@ -132,5 +132,21 @@ package My::Bar {
 # define
 define FOO = 'bar';
 ok FOO eq 'bar', 'define ok';
+
+# extra typelibs
+{ package TypedFoo;
+  use Test::More;
+  use Defaults::Modern
+    -all,
+    -with_types => [ 'TypeLib' ];
+
+  ok []->count == 0, '-all import tag ok';
+  fun takes_foo (FooType $foo) {
+    ok $foo eq 'foo', 'extra typelibs registered ok';
+  }
+  takes_foo('foo');
+  eval {; takes_foo('bar') };
+  ok $@, 'extra typelibs ok';
+}
 
 done_testing;
