@@ -4,7 +4,7 @@
       "Jon Portnoy <avenj@cobaltirc.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 5.013, CPAN::Meta::Converter version 2.133380",
    "license" : [
       "perl_5"
    ],
@@ -35,15 +35,16 @@
          },
          "requires" : {
             "Carp" : "0",
+            "Exporter::Tiny" : "0.034",
             "Function::Parameters" : "1.0301",
             "Import::Into" : "1",
             "Keyword::Simple" : "0",
-            "List::Objects::Types" : "0.006",
-            "List::Objects::WithUtils" : "2.003001",
+            "List::Objects::Types" : "1.002",
+            "List::Objects::WithUtils" : "2.008",
             "Module::Runtime" : "0",
             "Moo" : "1",
             "MooX::late" : "0.014",
-            "Path::Tiny" : "0.03",
+            "Path::Tiny" : "0.05",
             "PerlX::Maybe" : "1",
             "Scalar::Util" : "0",
             "Switch::Plain" : "0",
@@ -61,7 +62,7 @@
       "test" : {
          "recommends" : {
             "CPAN::Meta" : "0",
-            "CPAN::Meta::Requirements" : "0"
+            "CPAN::Meta::Requirements" : "2.120900"
          },
          "requires" : {
             "Test::More" : "0.88"
@@ -76,6 +77,6 @@
          "web" : "git://github.com/avenj/defaults-modern"
       }
    },
-   "version" : "0.007001"
+   "version" : "0.007002"
 }
 

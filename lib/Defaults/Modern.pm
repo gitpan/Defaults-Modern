@@ -1,7 +1,5 @@
 package Defaults::Modern;
-{
-  $Defaults::Modern::VERSION = '0.007001';
-}
+$Defaults::Modern::VERSION = '0.007002';
 use v5.14;
 
 use strict; use warnings FATAL => 'all';
@@ -60,7 +58,7 @@ sub import {
       next PARAM
     }
 
-    my $opt = lc($item =~ s/^(?:-|:)//r);
+    my $opt = lc($item =~ s/^(?:[-:])//r);
     Carp::croak "$class does not export $opt" unless $known->{$opt};
 
     if ($opt eq 'all') {
@@ -87,6 +85,9 @@ sub import {
   strict->import;
   warnings->import(FATAL => 'all');
   warnings->unimport('once');
+  if ($] >= 5.018) {
+    warnings->unimport('experimental');
+  }
 
   bareword::filehandles->unimport;
   indirect->unimport(':fatal');
@@ -147,6 +148,7 @@ sub import {
     try {
       Type::Registry->for_class($pkg)->add_types($typelib);
     } catch {
+      # Usually conflicts; whine but prefer user's previous imports:
       Carp::carp($_)
     };
   }
@@ -291,9 +293,9 @@ L<true>.pm so you can skip adding '1;' to all of your modules
 
 =back
 
-If you want to automatically load (with the '-all' import tag) and register
-other L<Type::Registry> compatible libraries (see L<Type::Library>), they can
-be specified at import time:
+If you want to automatically load (shown here with the '-all' import tag, as
+well) and register other L<Type::Registry> compatible libraries (see
+L<Type::Library>), they can be specified at import time:
 
   use Defaults::Modern
     -all,

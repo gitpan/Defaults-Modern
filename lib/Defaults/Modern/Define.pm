@@ -1,7 +1,5 @@
 package Defaults::Modern::Define;
-{
-  $Defaults::Modern::Define::VERSION = '0.007001';
-}
+$Defaults::Modern::Define::VERSION = '0.007002';
 use strict; use warnings FATAL => 'all';
 
 # Forked from TOBYINK's PerlX::Define, copyright Toby Inkster
@@ -21,7 +19,8 @@ sub import {
     my $code = ref $val ?
         qq[package $pkg; sub $name () { \$val }; 1;]
         : qq[package $pkg; sub $name () { ${\ B::perlstring($val) } }; 1;];
-    local $@; eval $code; die $@ if $@;
+    local $@;
+    eval $code and not $@ or Carp::croak "eval: $@";
     return
   }
 
@@ -31,8 +30,7 @@ sub import {
       ($$line =~ m{\A([\n\s]*)(\w+)([\n\s]*)(=\>?)}s)
         or Carp::croak("Syntax error near 'define'");
     my $len = length $ws1 . $name . $ws2 . $equals;
-    substr($$line, 0, $len)
-     = ";use Defaults::Modern::Define $name => ";
+    substr $$line, 0, $len, ";use Defaults::Modern::Define $name => ";
   });
 }
 
