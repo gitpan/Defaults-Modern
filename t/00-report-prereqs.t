@@ -60,7 +60,8 @@ my $static_prereqs = do { my $x = {
                     },
        'runtime' => {
                       'recommends' => {
-                                        'PerlX::Maybe::XS' => '1'
+                                        'PerlX::Maybe::XS' => '1',
+                                        'match::simple::XS' => '0'
                                       },
                       'requires' => {
                                       'Carp' => '0',
@@ -78,7 +79,7 @@ my $static_prereqs = do { my $x = {
                                       'Scalar::Util' => '0',
                                       'Switch::Plain' => '0',
                                       'Try::Tiny' => '0',
-                                      'Type::Tiny' => '0.022',
+                                      'Type::Tiny' => '0.04',
                                       'Types::LoadableClass' => '0.002',
                                       'Types::Path::Tiny' => '0.005',
                                       'bareword::filehandles' => '0',

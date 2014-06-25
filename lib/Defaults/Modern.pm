@@ -1,5 +1,5 @@
 package Defaults::Modern;
-$Defaults::Modern::VERSION = '0.007002';
+$Defaults::Modern::VERSION = '0.008001';
 use v5.14;
 
 use strict; use warnings FATAL => 'all';
@@ -53,8 +53,12 @@ sub import {
     if ($item eq 'with_types' || $item eq '-with_types') {
       $typelibs = $_[$idx];
       splice @_, $current, 2;
-      Carp::croak "with_types should be an ARRAY, got $typelibs"
-        unless ref $typelibs and Scalar::Util::reftype($typelibs) eq 'ARRAY';
+      if (ref $typelibs) {
+        Carp::croak "with_types should be an ARRAY, got $typelibs"
+          if Scalar::Util::reftype($typelibs) ne 'ARRAY';
+      } else {
+        $typelibs = [ $typelibs ]
+      }
       next PARAM
     }
 
